@@ -30,10 +30,10 @@ you change them.
   - run `npm run build`
   - run `npm run webserver`
 - Go to the game
-  - `wget http://localhost:9182/bin/utils/initRepo.ns
-    /bin/utils/initRepo.ns`
-  - `run /bin/utils/initRepo.ns`
-  - `run /bin/sayHelloTs.ns`
+  - `wget http://localhost:9182/bin/utils/initRepo.js
+    /bin/utils/initRepo.js`
+  - `run /bin/utils/initRepo.js`
+  - `run /bin/sayHelloTs.js`
 
 If you see the colored output until the fake error, you should be good
 to go :)

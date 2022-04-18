@@ -1,4 +1,4 @@
-import {NS} from "Bitburner";
+import { NS } from "Bitburner";
 
 const ReadText = {
     readLines(ns: NS, file: string): string[] {
@@ -17,7 +17,7 @@ const DownloadFiles = {
         const logger = new TermLogger(ns);
         logger.info(`Downloading ${source} -> ${dest}`);
 
-        if (!(await ns.wget(source, dest, "home"))) {
+        if (!(await ns.wget(source, dest, ns.getHostname()))) {
             logger.err(`\tFailed retrieving ${source} -> ${dest}`);
         }
     },
@@ -28,10 +28,8 @@ class TermLogger {
     static WARN_LITERAL = "WARN   >";
     static ERR_LITERAL = "ERROR  >";
     static TRACE_LITERAL = "TRACE  >";
-    ns: NS;
 
-    constructor(ns: NS) {
-        this.ns = ns;
+    constructor(public ns: NS) {
     }
 
     info(msg: string, ...args: string[]) {
@@ -48,6 +46,9 @@ class TermLogger {
 
     log(msg: string, ...args: string[]) {
         this.ns.tprintf(`${TermLogger.TRACE_LITERAL} ${msg}`, ...args);
+    }
+    trace(msg: string, ...args: string[]) {
+        this.log(msg, ...args);
     }
 }
 
@@ -117,4 +118,4 @@ class RepoInit {
     }
 }
 
-export {ReadText, TermLogger, RepoInit, DownloadFiles};
+export { ReadText, TermLogger, RepoInit, DownloadFiles };

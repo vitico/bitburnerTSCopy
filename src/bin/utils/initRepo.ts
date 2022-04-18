@@ -1,4 +1,4 @@
-import {NS} from "Bitburner";
+import { NS } from "Bitburner";
 
 const params = {
     baseUrl: "http://localhost:9182/",
@@ -7,12 +7,12 @@ const params = {
         destFile: "/resources/manifest.txt",
     },
     helpers: {
-        sourceFile: "lib/Helpers.ns",
-        destFile: "/lib/Helpers.ns",
+        sourceFile: "lib/Helpers.js",
+        destFile: "/lib/Helpers.js",
     },
     pullFiles: {
-        sourceFile: "bin/utils/pullFiles.ns",
-        destFile: "/bin/utils/pullFiles.ns",
+        sourceFile: "bin/utils/pullFiles.js",
+        destFile: "/bin/utils/pullFiles.js",
     },
 };
 
@@ -25,7 +25,7 @@ async function pullFile(
         `INFO   > Downloading ${manifestUrl} -> ${file.destFile}`
     );
 
-    if (!(await ns.wget(manifestUrl, file.destFile, "home"))) {
+    if (!(await ns.wget(manifestUrl, file.destFile, ns.getHostname()))) {
         ns.tprintf(`ERROR  > ${manifestUrl} -> ${file.destFile} failed.`);
         ns.exit();
     }
