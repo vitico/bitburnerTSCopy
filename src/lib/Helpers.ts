@@ -28,26 +28,31 @@ class TermLogger {
     static WARN_LITERAL = "WARN   >";
     static ERR_LITERAL = "ERROR  >";
     static TRACE_LITERAL = "TRACE  >";
-
-    constructor(public ns: NS) {
+    public canLog: boolean = true;
+    constructor(public ns: NS, public identifier: string = "") {
     }
 
     info(msg: string, ...args: string[]) {
-        this.ns.tprintf(`${TermLogger.INFO_LITERAL} ${msg}`, ...args);
+        if (!this.canLog) return;
+        this.ns.printf(`${TermLogger.INFO_LITERAL}[${this.identifier ? this.identifier + ":" : ""}] ${msg}`, ...args);
     }
 
     warn(msg: string, ...args: string[]) {
-        this.ns.tprintf(`${TermLogger.WARN_LITERAL} ${msg}`, ...args);
+        if (!this.canLog) return;
+        this.ns.printf(`${TermLogger.WARN_LITERAL}[${this.identifier ? this.identifier + ":" : ""}] ${msg}`, ...args);
     }
 
     err(msg: string, ...args: string[]) {
-        this.ns.tprintf(`${TermLogger.ERR_LITERAL} ${msg}`, ...args);
+        if (!this.canLog) return;
+        this.ns.printf(`${TermLogger.ERR_LITERAL}[${this.identifier ? this.identifier + ":" : ""}] ${msg}`, ...args);
     }
 
     log(msg: string, ...args: string[]) {
-        this.ns.tprintf(`${TermLogger.TRACE_LITERAL} ${msg}`, ...args);
+        if (!this.canLog) return;
+        this.ns.printf(`${TermLogger.TRACE_LITERAL}[${this.identifier ? this.identifier + ":" : ""}] ${msg}`, ...args);
     }
     trace(msg: string, ...args: string[]) {
+        if (!this.canLog) return;
         this.log(msg, ...args);
     }
 }
