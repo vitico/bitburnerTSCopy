@@ -4,6 +4,7 @@
     "module": "ES2020",
     "rootDir": "src/",
     "baseUrl": "src/",
+    "jsx": "react",
     "paths": {
       "/lib/*": [
         "lib/*"
@@ -15,6 +16,7 @@
     "outDir": "build/",
     "moduleResolution": "node",
     "strictNullChecks": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+    "allowSyntheticDefaultImports": true
   }
 }

@@ -1,6 +1,6 @@
 import { NS } from "Bitburner";
 import { TermLogger } from "/lib/Helpers";
-import { basePath, getData, getServerAvailableRam } from "/bin/utils/analyze";
+import { basePath, getData, getServerAvailableRam, getServerAvailableRam2 } from "/bin/utils/analyze";
 /**
  * 
  * @param {NS} ns 
@@ -16,7 +16,7 @@ export async function main(ns: NS) {
     }
     if (data == undefined) return;
 
-    let ram = getServerAvailableRam(ns, ns.getHostname());
+    let ram = getServerAvailableRam2(ns, ns.getHostname());
     async function execScript(script, time, minThreads) {
         let scriptRam = ns.getScriptRam(script);
         let scriptThreads = Math.min(Math.floor(ram / scriptRam), minThreads);

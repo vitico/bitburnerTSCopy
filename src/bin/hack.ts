@@ -1,6 +1,6 @@
 import { NS } from "Bitburner";
 import { symbolName } from "typescript";
-import { getData, getServerAvailableRam } from "/bin/utils/analyze";
+import { getData, getServerAvailableRam, getServerAvailableRam2 } from "/bin/utils/analyze";
 import { TermLogger } from "/lib/Helpers";
 import { canHack, delay } from "/lib/utils";
 
@@ -11,7 +11,11 @@ export async function main(ns: NS) {
     let server = ns.args[0] as string;
     let runnerServer = ns.args[1] as string || ns.getHostname();
     let port = ns.args[2] as number;
+
     let identifier = ns.args[3] as string || "-1";
+
+    let isFormulas = ns.args[4] as boolean || false;
+
     let logger = new TermLogger(ns);
     async function execScript(script: string, threads: number, time: number) {
         // logger.log("Executing " + script + " with " + threads + " threads for " + time + " seconds");
@@ -27,14 +31,14 @@ export async function main(ns: NS) {
         ns.exec(script, runnerServer, threads, server, ...args);
         await ns.asleep(time);
     }
-    let availableRam = getServerAvailableRam(ns, runnerServer);
+    let availableRam = getServerAvailableRam2(ns, runnerServer);
 
     async function doHack() {
         let data = getData(ns, server, runnerServer).getHackInfo(false);
 
         if (data == undefined) return false;
 
-        let { growThreads, growTime, hackThreads, hackTime, ramUsage, totalRam, weakenThreads, weakenTime, totalTime } = data;
+        let { growThreads, growTime, hackThreads, hackTime, ramUsage, totalRam, weakenThreads, weakenTime, totalTime, realServer } = data;
         if (totalRam > availableRam) {
             // logger.log("Not enough ram to hack");
             return false;
@@ -75,8 +79,10 @@ export async function main(ns: NS) {
             // logger.info(`\tHack: starts in ${startHackIn}ms`);
             await ns.sleep(startHackIn);
 
-            if (ns.formulas.hacking.hackPercent(ns.getServer(server), ns.getPlayer()) > 0.5)
-                hackThreads = ns.hackAnalyzeThreads(server, ns.getServer(server).moneyAvailable * 0.1);
+            if (isFormulas) {
+                if (ns.formulas.hacking.hackPercent(realServer, ns.getPlayer()) > 0.5)
+                    hackThreads = ns.hackAnalyzeThreads(server, realServer.moneyAvailable * 0.1);
+            }
             // logger.info(`\tHack: ${hackThreads} threads, ${totalRam} ram, ${hackTime} seconds`);
             execScript(basePath + "hack.js", hackThreads, hackTime * 1000 + 50);
             totalTime -= startHackIn;
@@ -89,14 +95,18 @@ export async function main(ns: NS) {
 
 
     }
-    getData(ns, server, runnerServer).getHackInfo(false)
-    do {
+    async function writeToPort(port: number, val: any) {
+        while (!(await ns.tryWritePort(port, val))) {
+            await ns.sleep(200 + Math.random() * 200);
+        }
+    }
 
-        await doHack();
-        await ns.sleep(1000);
-        await ns.writePort(port, +ns.readPort(port) - 1);
 
-        availableRam = getServerAvailableRam(ns, runnerServer);
-    } while (false)
+    await doHack();
+
+    await ns.sleep(1 + Math.random() * 1000);
+    await writeToPort(port, -1);
+
+    availableRam = getServerAvailableRam2(ns, runnerServer);
 
 }

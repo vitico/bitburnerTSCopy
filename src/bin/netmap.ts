@@ -5,9 +5,11 @@
 /** @param {NS} ns **/
 export async function main(ns) {
     function formatnum(num) {
-        const options = {
+        const options: Intl.NumberFormatOptions = {
+            compactDisplay: "short",
+            notation: "compact",
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
         };
         const formatted = Number(num).toLocaleString('en', options);
         return formatted;
